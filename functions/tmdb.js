@@ -36,11 +36,15 @@ exports.handler = async function (event) {
     }
   }
 
+  const { path, queryStringParameters } = event
+
+  console.log({ path })
+
   const body = await axios({
     baseURL,
-    url: event.path,
+    url: path,
     params: {
-      ...(event.queryStringParameters || {}),
+      ...(queryStringParameters || {}),
       api_key
     }
   })
