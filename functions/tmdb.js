@@ -53,6 +53,6 @@ exports.handler = async function (event, context) {
   return {
     statusCode,
     headers: { ...headers, 'Content-type': 'application/json' },
-    body
+    body: JSON.stringify(body)
   }
 }
