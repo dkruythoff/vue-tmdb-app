@@ -27,11 +27,11 @@ exports.handler = async function (event, context) {
     }
   }
 
-  console.log({ event, context })
-  const { path, queryStringParameters } = event
+  const { path: fullPath, queryStringParameters } = event
+  const path = fullPath.replace('/.netlify/functions/tmdb', '')
 
   // Path check
-  if (!path) {
+  if (!path || path === '/') {
     return {
       statusCode: 500,
       headers,
