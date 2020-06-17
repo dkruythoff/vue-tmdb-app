@@ -8,7 +8,7 @@ const headers = {
 const baseURL = 'https://api.themoviedb.org/3/'
 const api_key = process.env.TMDB_API_KEY
 
-exports.handler = async function (event) {
+exports.handler = async function (event, context) {
 
   // CORS
   if (event.httpMethod === 'OPTIONS') {
@@ -27,18 +27,17 @@ exports.handler = async function (event) {
     }
   }
 
+  console.log({ event, context })
+  const { path, queryStringParameters } = event
+
   // Path check
-  if (!event.path) {
+  if (!path) {
     return {
       statusCode: 500,
       headers,
       body: 'No path given'
     }
   }
-
-  const { path, queryStringParameters } = event
-
-  console.log({ path })
 
   const body = await axios({
     baseURL,
