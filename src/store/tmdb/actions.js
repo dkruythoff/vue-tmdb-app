@@ -5,11 +5,13 @@ const baseURL = process.env.VUE_APP_TMDB_API_BASE || '/.netlify/functions/tmdb'
 /**
  * Fetch the next page for popular tv movies and store it in state
  *
- * @param context The VueX module context
+ * @param {object} context - The VueX module context
  */
 export async function fetchPopularMoviePage({ commit, state }) {
-  commit('preparePopularMoviePage') // prepare new empty page
-  const nextPage = state.movie.popular.pages.length // which gives us the next index
+  // prepare a new empty page on which to set the results
+  commit('preparePopularMoviePage')
+  // pages in API are 1-based, so pages.length will suffice
+  const nextPage = state.movie.popular.pages.length
 
   try {
     // fetch the next page data
@@ -20,8 +22,10 @@ export async function fetchPopularMoviePage({ commit, state }) {
         page: nextPage
       }
     })
+    // commit page data to state
     commit('setPopularMoviePage', data)
   } catch (error) {
+    // since we can store multiple pages simultaneously, store errors in the page object
     commit('setPopularMoviePageError', { page: nextPage, error })
   }
 }
@@ -29,11 +33,13 @@ export async function fetchPopularMoviePage({ commit, state }) {
 /**
  * Fetch the next page for popular tv shows and store it in state
  *
- * @param context The VueX module context
+ * @param {object} context - The VueX module context
  */
 export async function fetchPopularTvPage({ commit, state }) {
-  commit('preparePopularTvPage') // prepare new empty page
-  const nextPage = state.tv.popular.pages.length // which gives us the next index
+  // prepare a new empty page on which to set the results
+  commit('preparePopularTvPage')
+  // pages in API are 1-based, so pages.length will suffice
+  const nextPage = state.tv.popular.pages.length
 
   try {
     // fetch the next page data
@@ -44,10 +50,10 @@ export async function fetchPopularTvPage({ commit, state }) {
         page: nextPage
       }
     })
-    // commit page data
+    // commit page data to state
     commit('setPopularTvPage', data)
   } catch (error) {
-    // store error for debugging purposes
+    // since we can store multiple pages simultaneously, store errors in the page object
     commit('setPopularTvPageError', { page: nextPage, error })
   }
 }
@@ -56,18 +62,21 @@ export async function fetchPopularTvPage({ commit, state }) {
  * Fetch all movie genres and store them in state 
  * Will only fetch when no genres are present
  * 
- * @param context The VueX module context
+ * @param {object} context - The VueX module context
  */
 export async function fetchMovieGenres({ commit, state }) {
   if (state.genres.length > 0) {
+    // we already have genres, and we only need them once
     return Promise.resolve()
   }
 
   try {
+    // fetch the genre list
     const { data: { genres } } = await axios({
       url: '/genre/movie/list',
       baseURL
     })
+    // store the genre list
     commit('setMovieGenres', genres)
   } catch (error) {
     // either log the error, or fail silently
@@ -75,11 +84,19 @@ export async function fetchMovieGenres({ commit, state }) {
   }
 }
 
+/**
+ * Fetch a new page for given movie genre
+ * @param {object} context - The VueX module context
+ * @param {{ id: number, name: string }} genre - The genre for which to fetch a page
+ */
 export async function fetchMovieGenrePage({ commit, state }, genre) {
+  // prepare a new empty page on which to set the results
   commit('prepareMovieGenrePage', genre)
+  // pages in API are 1-based, so pages.length will suffice
   const page = state.movie.by_genre[genre.id].pages.length
 
   try {
+    // fetch the genre page
     const { data: pageData } = await axios({
       url: '/discover/movie',
       baseURL,
@@ -88,18 +105,26 @@ export async function fetchMovieGenrePage({ commit, state }, genre) {
         with_genres: genre.id
       }
     })
+    // commit the page data to state
     commit('setMovieGenrePage', { genre, pageData })
   } catch (error) {
+    // since we can store multiple pages simultaneously, store errors in the page object
     commit('setMovieGenrePageError', { genre, page, error })
   }
 }
 
+/**
+ * Run initial fetches
+ * @param {object} context - The VueX context
+ */
 export function init({ state, dispatch }) {
 
+  // if no pages are present for popular movies, fetch the first
   if (state.movie.popular.pages.length === 0) {
     dispatch('fetchPopularMoviePage')
   }
 
+  // if no pages are present for popular tv shows, fetch the first
   if (state.tv.popular.pages.length === 0) {
     dispatch('fetchPopularTvPage')
   }
