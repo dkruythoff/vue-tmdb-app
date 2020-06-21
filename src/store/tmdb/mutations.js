@@ -87,7 +87,7 @@ export function setPopularTvPage(state, pageData) {
     ...results.reduce((acc, tv) => ({
       ...acc,
       [tv.id]: tv
-    }))
+    }), {})
   }
 }
 
