@@ -1,11 +1,16 @@
 <template>
   <div id="app">
-    The app
+    <Overview />
   </div>
 </template>
 
 <script>
+import Overview from './components/Overview'
+
 export default {
+  components: {
+    Overview
+  },
   created() {
     this.$store.dispatch('tmdb/init')
   }
