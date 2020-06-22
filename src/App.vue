@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <github-corners repo="dkruythoff/vue-tmdb-app"></github-corners>
     <Localeswitcher />
     <Overview />
   </div>
