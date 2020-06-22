@@ -3,7 +3,12 @@
  * @param {object} state - The VueX module state
  */
 export function preparePopularMoviePage(state) {
-  state.movie.popular.pages.push({ status: 'pending', ids: [] })
+  const { pages } = state.moviePopular
+  pages.push({ status: 'pending', ids: [] })
+  state.moviePopular = {
+    ...state.moviePopular,
+    pages
+  }
 }
 
 /**
@@ -12,8 +17,15 @@ export function preparePopularMoviePage(state) {
  * @param {{ page: number, error: Error }} payload - The error and corresponding page number
  */
 export function setPopularMoviePageError(state, { page, error }) {
+  const { pages } = state.moviePopular
+  // page numbers are 1-based, but their array index is 0-based
   const pageIndex = page - 1
-  state.movie.popular.pages[pageIndex] = { status: 'error', error }
+  pages[pageIndex] = { status: 'error', error }
+
+  state.moviePopular = {
+    ...state.moviePopular,
+    pages
+  }
 }
 
 /**
@@ -24,20 +36,24 @@ export function setPopularMoviePageError(state, { page, error }) {
 export function setPopularMoviePage(state, pageData) {
   const { page, total_results, total_pages, results } = pageData
 
-  state.movie.popular.total_results = total_results
-  state.movie.popular.total_pages = total_pages
-
   // page numbers are 1-based, but their array index is 0-based
   const pageIndex = page - 1
-  state.movie.popular.pages[pageIndex] = {
+  const { pages } = state.moviePopular
+  pages[pageIndex] = {
     status: 'loaded',
     ids: results.map(({ id }) => id)
   }
 
+  state.moviePopular = {
+    total_pages,
+    total_results,
+    pages
+  }
+
   // normalization:
-  // store data in _entries, while referencing it in lists of ids
-  state.movie._entries = {
-    ...state.movie._entries,
+  // store data in data, while referencing it in lists of ids
+  state.movieData = {
+    ...state.movieData,
     ...results.reduce((acc, movie) => ({
       ...acc,
       [movie.id]: movie
@@ -50,7 +66,9 @@ export function setPopularMoviePage(state, pageData) {
  * @param {object} state - The VueX module state
  */
 export function preparePopularTvPage(state) {
-  state.tv.popular.pages.push({ status: 'pending', ids: [] })
+  const { pages } = state.tvPopular
+  pages.push({ status: 'pending', ids: [] })
+  state.tvPopular = { ...state.tvPopular, pages }
 }
 
 /**
@@ -59,7 +77,9 @@ export function preparePopularTvPage(state) {
  * @param {{ page: number, error: Error }} payload - The page number and error
  */
 export function setPopularTvPageError(state, { page, error }) {
-  state.tv.popular.pages[page] = { status: 'error', error }
+  const { pages } = state.tvPopular
+  pages[page] = { status: 'error', error }
+  state.tvPopular = { ...state.tvPopular, pages }
 }
 
 /**
@@ -70,23 +90,31 @@ export function setPopularTvPageError(state, { page, error }) {
 export function setPopularTvPage(state, pageData) {
   const { page, total_results, total_pages, results } = pageData
 
-  state.tv.popular.total_results = total_results
-  state.tv.popular.total_pages = total_pages
+  state.tvPopular.total_results = total_results
+  state.tvPopular.total_pages = total_pages
 
   // page numbers are 1-based, but their array index is 0-based
   const pageIndex = page - 1
-  state.tv.popular.pages[pageIndex] = {
+  const { pages } = state.tvPopular
+  pages[pageIndex] = {
     status: 'loaded',
     ids: results.map(({ id }) => id)
   }
 
+  state.tvPopular = {
+    ...state.tvPopular,
+    total_pages,
+    total_results,
+    pages
+  }
+
   // normalization:
-  // store data in _entries, while referencing it in lists of ids
-  state.tv._entries = {
-    ...state.tv._entries,
+  // store data in data, while referencing it in lists of ids
+  state.tvData = {
+    ...state.tvData,
     ...results.reduce((acc, tv) => ({
       ...acc,
-      [tv.id]: tv
+      [tv.id]: { ...tv, title: tv.name }
     }), {})
   }
 }
@@ -108,13 +136,20 @@ export function setMovieGenres(state, genres) {
 export function prepareMovieGenrePage(state, genre) {
   const { id, name } = genre
 
-  // if the genre object does not exist, create it now
-  state.movie.by_genre[id] = state.movie.by_genre[id] || { id, name, pages: [] }
+  const pages = [
+    ...(state.movieByGenre[id] ? state.movieByGenre[id].pages : []),
+    { state: 'pending', ids: [] }
+  ]
 
-  state.movie.by_genre[id].pages.push({
-    state: 'pending',
-    ids: []
-  })
+  state.movieByGenre = {
+    ...state.movieByGenre,
+    [id]: {
+      ...state.movieByGenre[id],
+      id,
+      name,
+      pages
+    }
+  }
 }
 
 /**
@@ -123,7 +158,18 @@ export function prepareMovieGenrePage(state, genre) {
  * @param {{genre:object, page: number, error: Error}} payload - Payload containing genre, page, and error
  */
 export function setMovieGenrePageError(state, { genre, page, error }) {
-  state.movie.by_genre[genre.id].pages[page] = { status: 'error', error }
+  const { id: genreId } = genre
+  const { pages } = state.movieByGenre[genreId]
+
+  pages[page] = { status: 'error', error }
+
+  state.movieByGenre = {
+    ...state.movieByGenre,
+    [genreId]: {
+      ...state.movieByGenre[genreId],
+      pages
+    }
+  }
 }
 
 /**
@@ -132,24 +178,32 @@ export function setMovieGenrePageError(state, { genre, page, error }) {
  * @param {{ genre:object, pageData: object }} payload - The genre on which to write, and the page data to write
  */
 export function setMovieGenrePage(state, { genre, pageData }) {
-  const { id } = genre
+  const { id: genreId } = genre
   const { page, total_results, total_pages, results } = pageData
-
-  state.movie.by_genre[id].total_pages = total_pages
-  state.movie.by_genre[id].total_results = total_results
 
   // page numbers are 1-based, but their array index is 0-based
   const pageIndex = page - 1
 
-  state.movie.by_genre[id].pages[pageIndex] = {
+  const { pages } = state.movieByGenre[genreId]
+  pages[pageIndex] = {
     state: 'loaded',
     ids: results.map(({ id }) => id)
   }
 
+  state.movieByGenre = {
+    ...state.movieByGenre,
+    [genreId]: {
+      ...state.movieByGenre[genreId],
+      total_results,
+      total_pages,
+      pages
+    }
+  }
+
   // normalization:
-  // store data in _entries, while referencing it in lists of ids
-  state.movie._entries = {
-    ...state.movie._entries,
+  // store data in data, while referencing it in lists of ids
+  state.movieData = {
+    ...state.movieData,
     ...results.reduce((acc, movie) => ({
       ...acc,
       [movie.id]: movie

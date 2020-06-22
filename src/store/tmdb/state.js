@@ -1,16 +1,16 @@
 export const state = {
-  tv: {
-    _entries: {},
-    popular: {
-      pages: []
-    }
+  tvPopular: {
+    total_results: 0,
+    total_pages: 0,
+    pages: []
   },
-  movie: {
-    _entries: {},
-    popular: {
-      pages: []
-    },
-    by_genre: {}
+  moviePopular: {
+    total_results: 0,
+    total_pages: 0,
+    pages: []
   },
-  genres: {}
+  movieByGenre: {},
+  genres: {},
+  movieData: {},
+  tvData: {}
 }

@@ -11,7 +11,7 @@ export async function fetchPopularMoviePage({ commit, state }) {
   // prepare a new empty page on which to set the results
   commit('preparePopularMoviePage')
   // pages in API are 1-based, so pages.length will suffice
-  const nextPage = state.movie.popular.pages.length
+  const nextPage = state.moviePopular.pages.length
 
   try {
     // fetch the next page data
@@ -39,7 +39,7 @@ export async function fetchPopularTvPage({ commit, state }) {
   // prepare a new empty page on which to set the results
   commit('preparePopularTvPage')
   // pages in API are 1-based, so pages.length will suffice
-  const nextPage = state.tv.popular.pages.length
+  const nextPage = state.tvPopular.pages.length
 
   try {
     // fetch the next page data
@@ -93,7 +93,7 @@ export async function fetchMovieGenrePage({ commit, state }, genre) {
   // prepare a new empty page on which to set the results
   commit('prepareMovieGenrePage', genre)
   // pages in API are 1-based, so pages.length will suffice
-  const page = state.movie.by_genre[genre.id].pages.length
+  const page = state.movieByGenre[genre.id].pages.length
 
   try {
     // fetch the genre page
@@ -120,12 +120,12 @@ export async function fetchMovieGenrePage({ commit, state }, genre) {
 export function init({ state, dispatch }) {
 
   // if no pages are present for popular movies, fetch the first
-  if (state.movie.popular.pages.length === 0) {
+  if (state.moviePopular.pages.length === 0) {
     dispatch('fetchPopularMoviePage')
   }
 
   // if no pages are present for popular tv shows, fetch the first
-  if (state.tv.popular.pages.length === 0) {
+  if (state.tvPopular.pages.length === 0) {
     dispatch('fetchPopularTvPage')
   }
 
