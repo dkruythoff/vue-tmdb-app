@@ -1,5 +1,5 @@
 <template>
-  <li class="carousel_item card">
+  <li class="carousel__item card">
     <h3 v-if="entry">{{entry.title}}</h3>
   </li>
 </template>
@@ -15,3 +15,10 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.card {
+  border-radius: 5px;
+  box-shadow: 2px 2px 2px 1px #ccc;
+}
+</style>
