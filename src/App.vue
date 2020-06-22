@@ -1,15 +1,18 @@
 <template>
   <div id="app">
+    <Localeswitcher />
     <Overview />
   </div>
 </template>
 
 <script>
 import Overview from './components/Overview'
+import Localeswitcher from './components/Localeswitcher'
 
 export default {
   components: {
-    Overview
+    Overview,
+    Localeswitcher
   },
   created() {
     this.$store.dispatch('tmdb/init')

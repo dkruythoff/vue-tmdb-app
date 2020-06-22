@@ -1,3 +1,12 @@
 {
-  "message": "hello i18n !!"
+  "overview": {
+    "title": {
+      "moviesPopular": "Popular movies",
+      "tvPopular": "Popular series",
+      "genre": {
+        "Documentary": "Documentary",
+        "Family": "Family"
+      }
+    }
+  }
 }

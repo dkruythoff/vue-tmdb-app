@@ -1,0 +1,12 @@
+{
+  "overview": {
+    "title": {
+      "moviesPopular": "Populaire films",
+      "tvPopular": "Populaire series",
+      "genre": {
+        "Documentary": "Documentaire",
+        "Family": "Familie"
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 <template>
   <div class="overview">
     <template v-if="moviePopular.length">
-      <b>{{ $t('Popular movies') }}</b>
+      <b>{{ $t('overview.title.moviesPopular') }}</b>
       <Carousel>
         <Card
           v-for="(entry, index) in moviePopular"
@@ -11,7 +11,7 @@
       </Carousel>
     </template>
     <template v-if="tvPopular.length">
-    <b>{{ $t('Popular series') }}</b>
+    <b>{{ $t('overview.title.tvPopular') }}</b>
     <Carousel>
       <Card
         v-for="entry in tvPopular"
@@ -21,7 +21,7 @@
     </Carousel>
     </template>
     <template v-for="genre in moviesByGenre">
-      <b :key="`movies-for-genre-${genre.id}-title`">{{ $t(genre.name) }}</b>
+      <b :key="`movies-for-genre-${genre.id}-title`">{{ $t(`overview.title.genre.${genre.name}`) }}</b>
       <Carousel :key="`movies-for-genre-${genre.id}-carousel`">
         <Card
           v-for="entry in genre.entries"
@@ -41,11 +41,16 @@ import Card from './Card'
 export default {
   name: 'Overview',
   components: {Card,Carousel},
-  computed: mapGetters({
-    tvPopular: 'tmdb/tvPopular',
-    moviePopular: 'tmdb/moviePopular',
-    moviesByGenre:'tmdb/moviesByGenre'
-  })
+  computed: {
+    ...mapGetters({
+      tvPopular: 'tmdb/tvPopular',
+      moviePopular: 'tmdb/moviePopular',
+      moviesByGenre:'tmdb/moviesByGenre'
+    }),
+    rootLocale() {
+      return this.$root.$i18n.messages
+    }
+  }
 }
 
 </script>
