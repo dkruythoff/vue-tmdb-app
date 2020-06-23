@@ -1,20 +1,26 @@
 <template>
-  <ul>
+  <ul class="language-selector">
     <li
       v-for="locale in locales"
       :key="`locale-switcher-locale-${locale.key}`"
       >
       <span
         v-if="locale.active"
-        >{{ locale.key }}</span>
+        class="language-selector__locale language-selector__locale--active"
+        >{{ locale.flag }}</span>
       <button
         v-else
-        @click="setLocale(locale.key)">{{ locale.key }}</button
+        class="language-selector__locale"
+        @click="setLocale(locale.key)">{{ locale.flag }}</button
     ></li>
   </ul>
 </template>
 
 <script>
+const flags = {
+  nl: '🇳🇱',
+  en: '🇬🇧'
+}
 export default {
   name: 'Localeswitcher',
   computed: {
@@ -22,7 +28,8 @@ export default {
       const { $i18n } = this.$root
       return Object.keys($i18n.messages).map(key => ({
         key,
-        active: key === $i18n.locale
+        active: key === $i18n.locale,
+        flag: flags[key]
       }))
     }
   },

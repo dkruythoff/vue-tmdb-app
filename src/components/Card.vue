@@ -1,6 +1,16 @@
 <template>
   <li class="carousel__item card">
-    <h3 v-if="entry">{{entry.title}}</h3>
+    <img
+      v-if="entry.poster_path"
+      class="card__image" :src="entry._poster"
+      :alt="entry.title"
+      />
+    <div
+      v-else
+      class="card__filler"
+      >
+      <span class="card__filler__title">{{entry.title}}</span>
+    </div>
   </li>
 </template>
 
@@ -26,17 +36,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-.card {
-  border-radius: 5px;
-  box-shadow: 2px 2px 2px 1px #ccc;
-
-  border: solid 2px transparent;
-
-  &:focus,
-  &:hover {
-    border-color: red;
-  }
-}
-</style>

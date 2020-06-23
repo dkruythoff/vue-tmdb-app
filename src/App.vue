@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <h1>TMDB/VueJS tech demo</h1>
     <github-corners repo="dkruythoff/vue-tmdb-app"></github-corners>
     <Localeswitcher />
     <Overview />
@@ -21,11 +22,6 @@ export default {
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-}
+<style lang="scss">
+@import "styles/main.scss";
 </style>
