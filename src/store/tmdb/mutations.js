@@ -57,7 +57,7 @@ export function setPopularMoviePage(state, pageData) {
     ...results.reduce((acc, movie) => ({
       ...acc,
       [movie.id]: movie
-    }))
+    }), {})
   }
 }
 
