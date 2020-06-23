@@ -11,6 +11,17 @@ export default {
     entry: {
       type: Object,
       default: null
+    },
+    focused: {
+      type: Boolean,
+      default: false
+    }
+  },
+  watch: {
+    focused(newVal) {
+      if (newVal) {
+        this.$el.focus()
+      }
     }
   }
 }
@@ -20,5 +31,12 @@ export default {
 .card {
   border-radius: 5px;
   box-shadow: 2px 2px 2px 1px #ccc;
+
+  border: solid 2px transparent;
+
+  &:focus,
+  &:hover {
+    border-color: red;
+  }
 }
 </style>
