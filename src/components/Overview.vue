@@ -46,10 +46,7 @@ export default {
       tvPopular: 'tmdb/tvPopular',
       moviePopular: 'tmdb/moviePopular',
       moviesByGenre:'tmdb/moviesByGenre'
-    }),
-    rootLocale() {
-      return this.$root.$i18n.messages
-    }
+    })
   }
 }
 
