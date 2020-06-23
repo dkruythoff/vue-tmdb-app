@@ -1,6 +1,7 @@
 <template>
   <ul class="language-selector">
     <li
+      class="language-selector__item"
       v-for="locale in locales"
       :key="`locale-switcher-locale-${locale.key}`"
       >

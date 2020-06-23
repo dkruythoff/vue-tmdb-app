@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h1>TMDB/VueJS tech demo</h1>
+    <h1 class="app-title">TMDB/VueJS tech demo</h1>
     <github-corners repo="dkruythoff/vue-tmdb-app"></github-corners>
     <Localeswitcher />
     <Overview />
