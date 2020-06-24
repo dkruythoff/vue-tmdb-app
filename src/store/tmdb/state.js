@@ -12,5 +12,7 @@ export const state = {
   movieByGenre: {},
   genres: {},
   movieData: {},
-  tvData: {}
+  tvData: {},
+  movieDetails: {},
+  tvDetails: {}
 }

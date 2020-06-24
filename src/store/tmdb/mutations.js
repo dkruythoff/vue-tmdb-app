@@ -210,3 +210,11 @@ export function setMovieGenrePage(state, { genre, pageData }) {
     }), {})
   }
 }
+
+export function setDetails(state, { type, data }) {
+  const typeContainer = `${type}Details`
+  state[typeContainer] = {
+    ...state[typeContainer],
+    [data.id]: data
+  }
+}

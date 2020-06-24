@@ -14,34 +14,51 @@
           :entry="entry"
           :focused="entry._focused"
           tabIndex="0"
+          @click.native="() => openDetail(entry)"
+          @keyup.enter.native="() => openDetail(entry)"
           />
       </Carousel>
     </template>
+    <Detail
+      v-if="detail"
+      :data="detail.listData"
+      :detail="detail.detailData"
+      @close="closeDetail"
+      />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import Carousel from './Carousel'
 import Card from './Card'
+import Detail from './Detail'
 
 const posterBase = 'http://image.tmdb.org/t/p/w342'
+const backdropBase = 'http://image.tmdb.org/t/p/w780'
 
 export default {
   name: 'Overview',
-  components: {Card,Carousel},
+  components: {
+    Card,
+    Carousel,
+    Detail
+  },
   data() {
     return {
       focusedCarouselIndex: -1,
       focusedCardIndex: -1,
-      inputType: null
+      inputType: null,
+      detail: null
     }
   },
   computed: {
     ...mapGetters({
       tvPopular: 'tmdb/tvPopular',
       moviePopular: 'tmdb/moviePopular',
-      moviesByGenre:'tmdb/moviesByGenre'
+      moviesByGenre:'tmdb/moviesByGenre',
+      tvDetails: 'tmdb/tvDetails',
+      movieDetails: 'tmdb/movieDetails'
     }),
     elementClass() {
       const classObj = {overview:true}
@@ -57,7 +74,8 @@ export default {
           entries: this.moviePopular.map((entry, entryIndex) => ({
             ...entry,
             _focused: focusedCarouselIndex === data.length && focusedCardIndex == entryIndex,
-            _poster: `${posterBase}${entry.poster_path}`
+            _poster: `${posterBase}${entry.poster_path}`,
+            _backdrop: `${backdropBase}${entry.backdrop_path}`
           }))
         })
       }
@@ -68,7 +86,8 @@ export default {
           entries: this.tvPopular.map((entry, entryIndex) => ({
             ...entry,
             _focused: focusedCarouselIndex === data.length && focusedCardIndex == entryIndex,
-            _poster: `${posterBase}${entry.poster_path}`
+            _poster: `${posterBase}${entry.poster_path}`,
+            _backdrop: `${backdropBase}${entry.backdrop_path}`
           }))
         })
       }
@@ -80,7 +99,8 @@ export default {
             entries: genre.entries.map((entry, entryIndex) => ({
               ...entry,
               _focused: focusedCarouselIndex === data.length && focusedCardIndex == entryIndex,
-            _poster: `${posterBase}${entry.poster_path}`
+            _poster: `${posterBase}${entry.poster_path}`,
+            _backdrop: `${backdropBase}${entry.backdrop_path}`
             }))
           })
         }
@@ -115,8 +135,32 @@ export default {
           this.focusedCarouselIndex = Math.max(this.focusedCarouselIndex, 0)
           this.focusedCardIndex = Math.min(this.focusedCardIndex + 1, this.overviewData[this.focusedCarouselIndex].entries.length - 1)
           break;
+        case 'Escape':
+          if (this.detail !== null) this.closeDetail()
+          break;
       }
     })
+  },
+  methods: {
+    ...mapActions({
+      fetchDetails: 'tmdb/fetchDetails'
+    }),
+    openDetail(entry) {
+      const {_type:type, id} = entry
+      const detailContainer = `${type}Details`
+
+      this.fetchDetails({type, id})
+        .catch(() => {})
+        .finally(() => {
+          this.detail = {
+            listData: entry,
+            detailData: this[detailContainer][id] || null
+          }
+        })
+    },
+    closeDetail() {
+      this.detail = null
+    }
   }
 }
 

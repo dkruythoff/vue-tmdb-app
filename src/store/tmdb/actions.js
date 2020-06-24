@@ -141,3 +141,28 @@ export function init({ state, dispatch }) {
       .forEach(genre => dispatch('fetchMovieGenrePage', genre))
   })
 }
+
+export async function fetchDetails({ state, commit }, { type, id }) {
+
+  const typeContainer = `${type}Details`
+
+  if (typeof state[typeContainer] === 'undefined') {
+    return Promise.reject(`Type ${type} not supported`)
+  }
+
+  if (state[typeContainer] && state[typeContainer][id]) {
+    return Promise.resolve()
+  }
+
+  try {
+    // fetch the genre page
+    const { data } = await axios({
+      url: `/${type}/${id}`,
+      baseURL
+    })
+    // commit the page data to state
+    commit('setDetails', { type, data })
+  } catch (error) {
+    // we may log an error, but for now it will suffice to not store anything
+  }
+}

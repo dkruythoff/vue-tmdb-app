@@ -8,5 +8,10 @@
         "Family": "Family"
       }
     }
+  },
+  "detail": {
+    "title": {
+      "overview": "Overview"
+    }
   }
 }
