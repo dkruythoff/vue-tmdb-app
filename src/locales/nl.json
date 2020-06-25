@@ -12,6 +12,9 @@
   "detail": {
     "title": {
       "overview": "Overzicht"
+    },
+    "button": {
+      "watchmovie": "Film kijken"
     }
   }
 }

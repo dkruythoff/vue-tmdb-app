@@ -24,6 +24,12 @@
       :data="detail.listData"
       :detail="detail.detailData"
       @close="closeDetail"
+      @play="playing = true"
+      />
+    <Player
+      v-if="playing"
+      @stop="playing = false"
+      src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
       />
   </div>
 </template>
@@ -33,6 +39,7 @@ import { mapGetters, mapActions } from 'vuex'
 import Carousel from './Carousel'
 import Card from './Card'
 import Detail from './Detail'
+import Player from './Player'
 
 const posterBase = 'http://image.tmdb.org/t/p/w342'
 const backdropBase = 'http://image.tmdb.org/t/p/w780'
@@ -42,14 +49,16 @@ export default {
   components: {
     Card,
     Carousel,
-    Detail
+    Detail,
+    Player
   },
   data() {
     return {
       focusedCarouselIndex: -1,
       focusedCardIndex: -1,
       inputType: null,
-      detail: null
+      detail: null,
+      playing: false
     }
   },
   computed: {
@@ -136,7 +145,11 @@ export default {
           this.focusedCardIndex = Math.min(this.focusedCardIndex + 1, this.overviewData[this.focusedCarouselIndex].entries.length - 1)
           break;
         case 'Escape':
-          if (this.detail !== null) this.closeDetail()
+          if (this.playing) {
+            this.playing = false
+          } else if (this.detail !== null) {
+            this.closeDetail()
+          }
           break;
       }
     })

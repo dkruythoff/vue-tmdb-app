@@ -12,6 +12,7 @@
       <div class="detail__overview">
         <h5 class="detail__overview__title">{{$t('detail.title.overview')}}</h5>
         <p>{{data.overview}}</p>
+        <button @click="$emit('play')">{{$t('detail.button.watchmovie')}}</button>
       </div>
     </div>
   </div>

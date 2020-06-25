@@ -12,6 +12,9 @@
   "detail": {
     "title": {
       "overview": "Overview"
+    },
+    "button": {
+      "watchmovie": "Watch Movie"
     }
   }
 }
