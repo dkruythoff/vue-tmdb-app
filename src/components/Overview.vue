@@ -41,9 +41,6 @@ import Card from './Card'
 import Detail from './Detail'
 import Player from './Player'
 
-const posterBase = 'http://image.tmdb.org/t/p/w342'
-const backdropBase = 'http://image.tmdb.org/t/p/w780'
-
 export default {
   name: 'Overview',
   components: {
@@ -67,7 +64,8 @@ export default {
       moviePopular: 'tmdb/moviePopular',
       moviesByGenre:'tmdb/moviesByGenre',
       tvDetails: 'tmdb/tvDetails',
-      movieDetails: 'tmdb/movieDetails'
+      movieDetails: 'tmdb/movieDetails',
+      searchResults: 'tmdb/searchResults'
     }),
     elementClass() {
       const classObj = {overview:true}
@@ -77,14 +75,36 @@ export default {
       const {focusedCarouselIndex, focusedCardIndex} = this
       const data = []
 
+      if (this.searchResults) {
+        if (this.searchResults.tv.length) {
+          data.push({
+            title: this.$t('overview.title.tvResults'),
+            entries: this.searchResults.tv.map((entry, entryIndex) => ({
+              ...entry,
+              _focused: focusedCarouselIndex === data.length && focusedCardIndex == entryIndex,
+            }))
+          })
+        }
+
+        if (this.searchResults.movie.length) {
+          data.push({
+            title: this.$t('overview.title.movieResults'),
+            entries: this.searchResults.movie.map((entry, entryIndex) => ({
+              ...entry,
+              _focused: focusedCarouselIndex === data.length && focusedCardIndex == entryIndex,
+            }))
+          })
+        }
+
+        return data
+      }
+
       if (this.moviePopular.length) {
         data.push({
           title: this.$t('overview.title.moviesPopular'),
           entries: this.moviePopular.map((entry, entryIndex) => ({
             ...entry,
             _focused: focusedCarouselIndex === data.length && focusedCardIndex == entryIndex,
-            _poster: `${posterBase}${entry.poster_path}`,
-            _backdrop: `${backdropBase}${entry.backdrop_path}`
           }))
         })
       }
@@ -95,8 +115,6 @@ export default {
           entries: this.tvPopular.map((entry, entryIndex) => ({
             ...entry,
             _focused: focusedCarouselIndex === data.length && focusedCardIndex == entryIndex,
-            _poster: `${posterBase}${entry.poster_path}`,
-            _backdrop: `${backdropBase}${entry.backdrop_path}`
           }))
         })
       }
@@ -108,8 +126,6 @@ export default {
             entries: genre.entries.map((entry, entryIndex) => ({
               ...entry,
               _focused: focusedCarouselIndex === data.length && focusedCardIndex == entryIndex,
-            _poster: `${posterBase}${entry.poster_path}`,
-            _backdrop: `${backdropBase}${entry.backdrop_path}`
             }))
           })
         }

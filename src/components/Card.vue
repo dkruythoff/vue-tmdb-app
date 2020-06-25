@@ -2,7 +2,7 @@
   <li class="carousel__item card">
     <img
       v-if="entry.poster_path"
-      class="card__image" :src="entry._poster"
+      class="card__image" :src="`http://image.tmdb.org/t/p/w342${entry.poster_path}`"
       :alt="entry.title"
       />
     <div

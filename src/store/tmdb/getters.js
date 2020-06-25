@@ -32,3 +32,16 @@ export function moviesByGenre(state) {
 export const tvDetails = ({ tvDetails }) => tvDetails
 
 export const movieDetails = ({ movieDetails }) => movieDetails
+
+export const searchResults = ({ searchResults, activeSearch, movieData, tvData }) => {
+  if (!activeSearch) {
+    return null
+  }
+
+  const { tv, movie } = searchResults[activeSearch].results
+
+  return {
+    tv: tv.map(id => ({ ...tvData[id], _type: 'tv' })),
+    movie: movie.map(id => ({ ...movieData[id], _type: 'movie' }))
+  }
+}

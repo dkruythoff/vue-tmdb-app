@@ -218,3 +218,58 @@ export function setDetails(state, { type, data }) {
     [data.id]: data
   }
 }
+
+export function setActiveSearch(state, query) {
+  state.activeSearch = query
+}
+
+export function setSearchResults(state, { query, data, error }) {
+  if (error) {
+    state.searchResults = {
+      ...state.searchResults,
+      [query]: {
+        error,
+        results: {
+          tv: [],
+          movie: []
+        }
+      }
+    }
+  } else {
+    const { results } = data
+
+    const movieResults = results.filter(result => result.media_type === 'movie')
+    const tvResults = results.filter(result => result.media_type === 'tv')
+
+    if (movieResults.length) {
+      state.movieData = {
+        ...state.movieData,
+        ...movieResults.reduce((acc, movie) => ({
+          ...acc,
+          [movie.id]: movie
+        }), {})
+      }
+    }
+
+    if (tvResults.length) {
+      state.tvData = {
+        ...state.tvData,
+        ...tvResults.reduce((acc, tv) => ({
+          ...acc,
+          [tv.id]: tv
+        }), {})
+      }
+    }
+
+    state.searchResults = {
+      ...state.searchResults,
+      [query]: {
+        results: {
+          tv: tvResults.map(({ id }) => id),
+          movie: movieResults.map(({ id }) => id),
+        }
+      }
+    }
+
+  }
+}

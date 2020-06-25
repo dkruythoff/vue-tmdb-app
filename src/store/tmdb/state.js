@@ -14,5 +14,7 @@ export const state = {
   movieData: {},
   tvData: {},
   movieDetails: {},
-  tvDetails: {}
+  tvDetails: {},
+  searchResults: {},
+  activeSearch: ''
 }

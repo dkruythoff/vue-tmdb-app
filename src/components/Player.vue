@@ -31,6 +31,7 @@ export default {
       if (!this.fullscreen) {
         this.fullscreen = true
       } else {
+        this.player.destroy()
         this.$emit('stop')
       }
     })

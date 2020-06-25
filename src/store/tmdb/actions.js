@@ -166,3 +166,25 @@ export async function fetchDetails({ state, commit }, { type, id }) {
     // we may log an error, but for now it will suffice to not store anything
   }
 }
+
+export async function search({ state, commit }, query) {
+  if (typeof state.searchResults[query] !== 'undefined') {
+    commit('setActiveSearch', query)
+    return Promise.resolve()
+  }
+
+  try {
+    const { data } = await axios({
+      url: '/search/multi',
+      baseURL,
+      params: {
+        query
+      }
+    })
+    commit('setSearchResults', { query, data })
+  } catch (error) {
+    commit('setSearchResults', { query, error })
+  }
+
+  commit('setActiveSearch', query)
+}
